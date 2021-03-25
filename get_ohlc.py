@@ -5,7 +5,6 @@ import yfinance as yf
 import os 
 import datetime
 import time
-import pandas as pd
 
 #override for data reader
 yf.pdr_override()
@@ -15,7 +14,7 @@ run_timestamp = datetime.datetime.now()
 start_date = '2016-01-01'
 end_date = datetime.date.today()
 
-#pause after 50 to prevent throttling 
+#pause after 10 to prevent throttling 
 batch_max = 10
 call_count = 0
 
