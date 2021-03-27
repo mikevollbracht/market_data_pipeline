@@ -25,6 +25,9 @@ tickers = tickers['Ticker']
 def get_ohlc():
     if not os.path.isdir('ohlc_data'):
         os.makedirs('ohlc_data')
+    
+    if not os.path.isdir('logs'):
+        os.makedirs('logs')
 
     for count, ticker in enumerate(tickers): 
         if not os.path.exists(f'ohlc_data/{ticker}.csv'):
@@ -34,7 +37,7 @@ def get_ohlc():
             if ohlc_data.shape[0] > 0: 
                 ohlc_data.to_csv(f'ohlc_data/{ticker}.csv')
             else: 
-                with open('ohlc_data/error_log.txt', 'a') as error_log:
+                with open('logs/ohlc_error_log.txt', 'a') as error_log:
                     error_log.write(f'{run_timestamp}: {ticker} not found\n')
                 
         #To prevent throttling by yahoo
