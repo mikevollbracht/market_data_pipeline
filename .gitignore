@@ -1,4 +1,5 @@
 /ohlc_data
 /logs
 *.ipynb
-.ipynb_checkpoints/
+*.ipynb_checkpoints/
+.DS_store

@@ -10,53 +10,67 @@ import time
 # override for data reader
 yf.pdr_override()
 
-# time of run for error log
-run_timestamp = datetime.datetime.now()
-start_date = '2016-01-01'
-end_date = datetime.date.today()
 
-# pause after 10 to prevent throttling
-batch_max = 10
-call_count = 0
+def get_ohlc(ticker_list='stocks', start_date='2015-01-01', ohlc_directory='ohlc_data_stocks'):
+    # set dates
+    run_timestamp = datetime.datetime.now()
+    end_date = datetime.date.today()
 
-# get tickers
-tickers = pd.read_csv('tickers/my_tickers.csv')
-tickers = tickers['Ticker']
+    # get list of tickers, else take a single ticker as an parameter
+    if ticker_list == 'stocks':
+        tickers = pd.read_csv('tickers/stock_tickers.csv')
+        tickers = tickers['Ticker']
 
+    elif ticker_list == 'crypto':
+        tickers = pd.read_csv('tickers/crypto_tickers.csv')
+        tickers = tickers['Pair']
+    else:
+        tickers = [ticker_list]
 
-def get_ohlc():
-    if not os.path.isdir('ohlc_data'):
-        os.makedirs('ohlc_data')
+    # initial settings to prevent yahoo throttling
+    batch_max = 10
+    call_count = 0
+
+    if not os.path.isdir(f'{ohlc_directory}'):
+        os.makedirs(f'{ohlc_directory}')
 
     if not os.path.isdir('logs'):
         os.makedirs('logs')
 
-    for count, ticker in enumerate(tickers):
-        if not os.path.exists(f'ohlc_data/{ticker}.csv'):
-            ohlc_data = pdr.get_data_yahoo(
-                ticker, start=start_date, end=end_date)
-            call_count += 1
+    for count, ticker in enumerate(tickers[:20]):
+        ohlc_data = pdr.get_data_yahoo(
+            ticker, start=start_date, end=end_date)
+        call_count += 1
 
-            if ohlc_data.shape[0] > 0:
-                # clean missing rows
-                ohlc_data.fillna(method='ffill', inplace=True)
-                ohlc_data.fillna(method='bfill', inplace=True)
-                # clean volume
-                ohlc_data['Volume'].replace(
-                    to_replace=0, method='ffill', inplace=True)
-                ohlc_data['Volume'].replace(
-                    to_replace=0, method='bfill', inplace=True)
-                ohlc_data.to_csv(f'ohlc_data/{ticker}.csv')
-            else:
-                with open('logs/ohlc_error_log.txt', 'a') as error_log:
-                    error_log.write(f'{run_timestamp}: {ticker} not found\n')
+        if ohlc_data.shape[0] > 0:
+            # clean missing rows
+            ohlc_data.fillna(method='ffill', inplace=True)
+            ohlc_data.fillna(method='bfill', inplace=True)
+            # clean volume
+            ohlc_data['Volume'].replace(
+                to_replace=0, method='ffill', inplace=True)
+            ohlc_data['Volume'].replace(
+                to_replace=0, method='bfill', inplace=True)
+
+            # pandas will overwrite the existing file
+            ohlc_data.to_csv(f'{ohlc_directory}/{ticker}.csv')
+        else:
+            with open('logs/ohlc_error_log.txt', 'a') as error_log:
+                error_log.write(f'{run_timestamp}: {ticker} not found\n')
 
         # To prevent throttling by yahoo
         if call_count % batch_max == 0:
             call_count = 0
             print(
-                f'Tickers Processed: {count}, waiting to prevent throttling.')
+                f'Tickers Processed: {count+1}, waiting to prevent throttling.')
             time.sleep(2)
 
 
-get_ohlc()
+# call stocks
+# get_ohlc()
+
+# call individual ticker
+# get_ohlc('AAPL')
+
+# call crypto
+get_ohlc('crypto', ohlc_directory='ohlc_data_crypto')
