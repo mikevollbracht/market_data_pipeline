@@ -70,7 +70,7 @@ def get_ohlc(ticker_list='stocks', start_date='2015-01-01', ohlc_directory='ohlc
 # get_ohlc()
 
 # call individual ticker
-# get_ohlc('AAPL')
+get_ohlc('SPY')
 
 # call crypto
-get_ohlc('crypto', ohlc_directory='ohlc_data_crypto')
+# get_ohlc('crypto', ohlc_directory='ohlc_data_crypto')

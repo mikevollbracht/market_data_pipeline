@@ -1,4 +1,4 @@
-/ohlc_data
+/ohlc*
 /logs
 *.ipynb
 *.ipynb_checkpoints/
