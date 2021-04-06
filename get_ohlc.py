@@ -42,7 +42,7 @@ def get_ohlc(ticker_list='stocks', start_date='2015-01-01', ohlc_directory='ohlc
             ticker, start=start_date, end=end_date)
         call_count += 1
 
-        if ohlc_data.shape[0] > 0:
+        if ohlc_data.shape[0] > 100:
             # clean missing rows
             ohlc_data.fillna(method='ffill', inplace=True)
             ohlc_data.fillna(method='bfill', inplace=True)
@@ -70,7 +70,7 @@ def get_ohlc(ticker_list='stocks', start_date='2015-01-01', ohlc_directory='ohlc
 # get_ohlc()
 
 # call individual ticker
-get_ohlc('SPY')
+get_ohlc('TSLA')
 
 # call crypto
 # get_ohlc('crypto', ohlc_directory='ohlc_data_crypto')
