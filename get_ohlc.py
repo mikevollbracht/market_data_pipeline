@@ -20,7 +20,9 @@ def get_ohlc(ticker_list='stocks', start_date='2015-01-01', ohlc_directory='ohlc
     if ticker_list == 'stocks':
         tickers = pd.read_csv('tickers/stock_tickers.csv')
         tickers = tickers['Ticker']
-
+    elif ticker_list == 'other':
+        tickers = pd.read_csv('tickers/other.csv')
+        tickers = tickers['Ticker']
     elif ticker_list == 'crypto':
         tickers = pd.read_csv('tickers/crypto_tickers.csv')
         tickers = tickers['Pair']
@@ -70,7 +72,10 @@ def get_ohlc(ticker_list='stocks', start_date='2015-01-01', ohlc_directory='ohlc
 # get_ohlc()
 
 # call individual ticker
-get_ohlc('TSLA')
+# get_ohlc('TSLA')
 
 # call crypto
 # get_ohlc('crypto', ohlc_directory='ohlc_data_crypto')
+
+# call index
+get_ohlc('other', ohlc_directory='ohlc_data_other')
